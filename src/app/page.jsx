@@ -7,6 +7,7 @@ import ModalAccessAudio from "@/components/ModalAccessAudio";
 import HelpText from "@/components/HelpText";
 import CommandInput from "@/components/CommandInput";
 import HelpModal from "@/components/HelpModal";
+import CommandInfoContainer from "@/components/CommandInfoContainer";
 import "./style.scss";
 
 const AUDIO_PERMISSION_KEY = "audio-permission-requested";
@@ -15,6 +16,7 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [audioAllowed, setAudioAllowed] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [currentCommand, setCurrentCommand] = useState(null);
   const audioPlayerRef = useRef(null);
 
   useEffect(() => {
@@ -56,10 +58,28 @@ export default function Home() {
     
     if (normalizedCommand === "/help" || normalizedCommand === "help") {
       setShowHelp(true);
-      // Закрываем через 5 секунд автоматически или при клике
-      setTimeout(() => {
-        setShowHelp(false);
-      }, 5000);
+    }
+  };
+
+  const handleInputChange = (inputValue) => {
+    const trimmedInput = inputValue.trim().toLowerCase();
+    
+    // Если инпут пустой, закрываем контейнер
+    if (!trimmedInput) {
+      setCurrentCommand(null);
+      return;
+    }
+    
+    // Проверяем, начинается ли ввод с одной из команд
+    if (trimmedInput.startsWith("/about")) {
+      setCurrentCommand("about");
+    } else if (trimmedInput.startsWith("/project")) {
+      setCurrentCommand("project");
+    } else if (trimmedInput.startsWith("/contacts")) {
+      setCurrentCommand("contacts");
+    } else {
+      // Если ввод не начинается с известных команд, закрываем контейнер
+      setCurrentCommand(null);
     }
   };
 
@@ -71,7 +91,12 @@ export default function Home() {
         autoPlay={audioAllowed}
       />
       <HelpText />
-      <CommandInput onCommand={handleCommand} />
+      <CommandInput 
+        onCommand={handleCommand} 
+        onInputChange={handleInputChange}
+        hasInfoContainer={!!currentCommand}
+      />
+      <CommandInfoContainer commandType={currentCommand} />
       <HelpModal 
         isOpen={showHelp} 
         onClose={() => setShowHelp(false)} 

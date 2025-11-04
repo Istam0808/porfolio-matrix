@@ -1,17 +1,41 @@
 @use "@/assets/styles/variables.scss" as *;
 
-.command-input-wrapper {
+.command-input-group {
   position: absolute;
   top: 55%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
+  transition: top 0.4s ease-out;
+
+  &--with-info {
+    top: 45%;
+  }
+}
+
+.command-input__hint {
+  font-family: $font-family-primary;
+  font-size: clamp(10px, 1.2vw, 12px);
+  color: $color-text-white;
+  letter-spacing: $letter-spacing-normal;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.command-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-family: $font-family-primary;
   font-size: clamp(16px, 2.5vw, 20px);
   color: $color-text-white;
+  background: black;
+  border: 1px solid white;
+  padding: 4px 8px;
 }
 
 .command-input-container {
@@ -56,8 +80,8 @@
   font-family: $font-family-primary;
   font-size: clamp(16px, 2.5vw, 20px);
   letter-spacing: $letter-spacing-normal;
-  min-width: 300px;
-  padding: 4px 2px 4px 0;
+  min-width: 500px;
+  padding: 10px 20px 7px 2px;
   caret-color: transparent;
 
   &::placeholder {
@@ -65,7 +89,7 @@
   }
 
   @media (max-width: 768px) {
-    min-width: 200px;
+    min-width: 300px;
     font-size: clamp(14px, 4vw, 18px);
   }
 }
@@ -77,9 +101,14 @@
   width: 2px;
   height: 1.2em;
   background-color: $color-text-white;
-  animation: cursor-blink 1s infinite;
   pointer-events: none;
   transition: left 0.05s linear;
+  opacity: 0;
+
+  &--focused {
+    opacity: 1;
+    animation: cursor-blink 1s infinite;
+  }
 }
 
 @keyframes cursor-blink {

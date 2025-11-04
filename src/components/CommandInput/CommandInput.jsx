@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import "./style.scss";
 
-const CommandInput = ({ onCommand }) => {
+const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
   const [command, setCommand] = useState("");
   const [cursorPosition, setCursorPosition] = useState(0);
   const [cursorLeft, setCursorLeft] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef(null);
   const measureRef = useRef(null);
 
@@ -14,6 +15,7 @@ const CommandInput = ({ onCommand }) => {
     // Фокусируем инпут при монтировании
     if (inputRef.current) {
       inputRef.current.focus();
+      setIsFocused(true);
     }
   }, []);
 
@@ -45,7 +47,12 @@ const CommandInput = ({ onCommand }) => {
   };
 
   const handleChange = (e) => {
-    setCommand(e.target.value);
+    const newValue = e.target.value;
+    setCommand(newValue);
+    // Передаем текущее значение в родительский компонент
+    if (onInputChange) {
+      onInputChange(newValue);
+    }
     // Обновляем позицию курсора после изменения
     setTimeout(updateCursorPosition, 0);
   };
@@ -71,6 +78,15 @@ const CommandInput = ({ onCommand }) => {
     updateCursorPosition();
   };
 
+  const handleFocus = () => {
+    setIsFocused(true);
+    updateCursorPosition();
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   // Вычисляем позицию курсора на основе ширины текста
   useLayoutEffect(() => {
     if (!measureRef.current || !inputRef.current) {
@@ -84,31 +100,36 @@ const CommandInput = ({ onCommand }) => {
   }, [command, cursorPosition]);
 
   return (
-    <div className="command-input-wrapper">
-      <span className="command-input__prefix">C:\&gt;</span>
-      <div className="command-input-container">
-        <input
-          ref={inputRef}
-          type="text"
-          className="command-input"
-          value={command}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onSelect={handleSelectionChange}
-          onClick={handleSelectionChange}
-          onKeyUp={handleSelectionChange}
-          placeholder=""
-          autoFocus
-        />
-        <span 
-          ref={measureRef}
-          className="command-input__measure"
-          aria-hidden="true"
-        />
-        <span 
-          className="command-input__cursor"
-          style={{ left: `${cursorLeft}px` }}
-        ></span>
+    <div className={`command-input-group ${hasInfoContainer ? 'command-input-group--with-info' : ''}`}>
+      <div className="command-input__hint">Напиши /help чтобы узнать больше</div>
+      <div className="command-input-wrapper">
+        <span className="command-input__prefix">C:\&gt;</span>
+        <div className="command-input-container">
+          <input
+            ref={inputRef}
+            type="text"
+            className="command-input"
+            value={command}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onSelect={handleSelectionChange}
+            onClick={handleSelectionChange}
+            onKeyUp={handleSelectionChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder=""
+            autoFocus
+          />
+          <span 
+            ref={measureRef}
+            className="command-input__measure"
+            aria-hidden="true"
+          />
+          <span 
+            className={`command-input__cursor ${isFocused ? 'command-input__cursor--focused' : ''}`}
+            style={{ left: `${cursorLeft}px` }}
+          ></span>
+        </div>
       </div>
     </div>
   );

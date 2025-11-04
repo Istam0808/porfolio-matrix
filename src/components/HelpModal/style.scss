@@ -13,6 +13,7 @@
   cursor: pointer;
 
   &__content {
+    position: relative;
     background: linear-gradient(135deg, rgba(0, 10, 20, 0.95), rgba(0, 5, 10, 0.98));
     border: 1px solid $color-matrix-green-dark;
     box-shadow: 0 0 40px rgba(0, 255, 65, 0.2), inset 0 0 20px rgba(0, 255, 65, 0.05);
@@ -23,6 +24,18 @@
     color: $color-text-white;
     cursor: default;
     animation: slideUp 0.4s ease-out;
+  }
+
+  &__esc-hint {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: $font-size-small;
+    color: $color-matrix-green;
+    font-weight: $font-weight-medium;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+    letter-spacing: $letter-spacing-normal;
+    pointer-events: none;
   }
 
   &__title {
@@ -73,6 +86,12 @@
   .help-modal {
     &__content {
       padding: 20px 24px;
+    }
+
+    &__esc-hint {
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
     }
 
     &__title {

@@ -7,17 +7,12 @@
   transform: translateX(-50%);
   z-index: 10;
   font-family: $font-family-primary;
-  font-size: clamp(16px, 2.5vw, 24px);
+  font-size: clamp(24px, 4vw, 48px);
   color: $color-text-white;
   letter-spacing: $letter-spacing-normal;
   text-align: center;
   white-space: nowrap;
-
-  &__highlight {
-    font-size: 1.3em;
-    color: $color-text-white;
-    font-weight: $font-weight-medium;
-  }
+  font-weight: $font-weight-medium;
 }
 
 @media (max-width: 768px) {
