@@ -1,0 +1,28 @@
+@use "@/assets/styles/variables.scss" as *;
+
+.help-text {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: $font-family-primary;
+  font-size: clamp(16px, 2.5vw, 24px);
+  color: $color-text-white;
+  letter-spacing: $letter-spacing-normal;
+  text-align: center;
+  white-space: nowrap;
+
+  &__highlight {
+    font-size: 1.3em;
+    color: $color-text-white;
+    font-weight: $font-weight-medium;
+  }
+}
+
+@media (max-width: 768px) {
+  .help-text {
+    top: 20%;
+    font-size: clamp(14px, 4vw, 20px);
+  }
+}

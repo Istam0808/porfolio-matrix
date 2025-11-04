@@ -1,0 +1,225 @@
+// ============================================
+// Цвета
+// ============================================
+
+// Основные цвета матрицы
+$color-matrix-green: #00ff41;
+$color-matrix-green-light: rgba(0, 255, 65, 0.9);
+$color-matrix-green-medium: rgba(0, 255, 65, 0.6);
+$color-matrix-green-dark: rgba(0, 255, 65, 0.3);
+$color-matrix-green-very-dark: rgba(0, 255, 65, 0.15);
+
+// Фоновые цвета
+$color-bg-primary: #01030a;
+$color-bg-secondary: rgba(1, 3, 10, 0.96);
+$color-bg-tertiary: rgba(1, 3, 10, 0.75);
+$color-bg-overlay: rgba(0, 0, 0, 0.85);
+
+// Текстовые цвета
+$color-text-white: #ffffff;
+$color-text-primary: rgba(220, 255, 240, 0.88);
+$color-text-secondary: rgba(245, 246, 250, 0.78);
+
+// Градиенты
+$color-gradient-green-start: rgba(0, 255, 65, 0.08);
+$color-gradient-green-end: rgba(0, 255, 65, 0.12);
+$color-gradient-dark-start: rgba(1, 3, 10, 0.96);
+$color-gradient-dark-end: rgba(0, 0, 0, 0.98);
+
+// ============================================
+// Шрифты
+// ============================================
+
+$font-family-primary: "Courier New", "Consolas", monospace;
+$font-family-fallback: Arial, Helvetica, sans-serif;
+
+// Размеры шрифтов
+$font-size-base: 14px;
+$font-size-small: 12px;
+$font-size-medium: 16px;
+$font-size-large: 20px;
+
+// Веса шрифтов
+$font-weight-normal: 400;
+$font-weight-medium: 600;
+$font-weight-bold: 700;
+
+// Высота строк
+$line-height-base: 1.6;
+$line-height-tight: 1.4;
+
+// Межбуквенные интервалы
+$letter-spacing-normal: 0.04em;
+$letter-spacing-wide: 0.5px;
+$letter-spacing-wider: 0.08em;
+
+// ============================================
+// Миксины для MatrixBackground
+// ============================================
+
+@mixin matrix-root-base {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 32px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@mixin matrix-pattern-base {
+  position: relative;
+  width: 1000px;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+@mixin matrix-column-base {
+  position: absolute;
+  top: -100%;
+  width: 20px;
+  height: 100%;
+  font-size: $font-size-base;
+  line-height: 18px;
+  font-weight: $font-weight-bold;
+  animation-name: matrix-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  white-space: nowrap;
+}
+
+@mixin matrix-column-size($width, $font-size, $line-height) {
+  width: $width;
+  font-size: $font-size;
+  line-height: $line-height;
+}
+
+// ============================================
+// Миксины для AudioPlayer
+// ============================================
+
+@mixin audio-control-base {
+  position: fixed;
+  bottom: clamp(20px, 4vw, 32px);
+  right: clamp(20px, 4vw, 32px);
+  z-index: 1000;
+  width: clamp(48px, 8vw, 56px);
+  height: clamp(48px, 8vw, 56px);
+  border-radius: 50%;
+  border: 1px solid $color-matrix-green-dark;
+  background: $color-bg-tertiary;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 0 $color-matrix-green-dark;
+  outline: none;
+}
+
+@mixin audio-control-hover {
+  border-color: $color-matrix-green-medium;
+  background: rgba(1, 3, 10, 0.9);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 0 4px $color-matrix-green-very-dark;
+  transform: scale(1.05);
+}
+
+@mixin audio-control-active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 2px $color-matrix-green-dark;
+}
+
+// ============================================
+// Миксины для Home
+// ============================================
+
+@mixin home-base {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+      120% 120% at 20% 15%,
+      $color-gradient-green-start 0%,
+      $color-gradient-dark-start 42%,
+      $color-gradient-dark-end 100%
+    ),
+    $color-bg-primary;
+  font-family: $font-family-primary;
+  color: $color-text-primary;
+}
+
+@mixin home-padding($value) {
+  padding: $value;
+}
+
+@mixin home-mask {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 20%, rgba(0, 255, 90, 0.12), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(0, 200, 160, 0.16), transparent 65%),
+    linear-gradient(135deg, rgba(0, 40, 60, 0.35), transparent 65%);
+}
+
+// ============================================
+// Миксины для Modal
+// ============================================
+
+@mixin modal-overlay-base {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-bg-overlay;
+  backdrop-filter: blur(4px);
+}
+
+@mixin modal-container-base {
+  position: relative;
+  width: min(90vw, 520px);
+  max-height: 90vh;
+  background: linear-gradient(135deg, rgba(0, 10, 20, 0.95), rgba(0, 5, 10, 0.98));
+  border: 1px solid $color-matrix-green-dark;
+  box-shadow: 0 0 40px rgba(0, 255, 65, 0.2), inset 0 0 20px rgba(0, 255, 65, 0.05);
+  font-family: $font-family-primary;
+  overflow: hidden;
+}
+
+@mixin modal-text-base {
+  color: $color-text-white;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  letter-spacing: $letter-spacing-wide;
+}
+
+// ============================================
+// Миксины для CMD компонентов
+// ============================================
+
+@mixin cmd-text-base {
+  font-family: $font-family-primary;
+  color: $color-text-white;
+  letter-spacing: $letter-spacing-normal;
+}
+
+@mixin cmd-cursor-blink {
+  animation: cursor-blink 1s infinite;
+}
+
+@mixin cmd-input-base {
+  background: transparent;
+  border: none;
+  outline: none;
+  @include cmd-text-base;
+  font-size: clamp(16px, 2.5vw, 20px);
+}
+

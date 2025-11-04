@@ -1,0 +1,239 @@
+@use "@/assets/styles/variables.scss" as *;
+
+.modal-overlay {
+  animation: modalFadeIn 0.3s ease-out;
+  @include modal-overlay-base;
+}
+
+.modal-container {
+  animation: modalSlideIn 0.4s ease-out;
+  transform: translateY(-20px);
+  opacity: 0;
+  @include modal-container-base;
+
+  &.modal-visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 65, 0.03) 2px,
+      rgba(0, 255, 65, 0.03) 4px
+    );
+    pointer-events: none;
+  }
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid $color-matrix-green-dark;
+  background: rgba(0, 255, 65, 0.05);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      $color-matrix-green-medium,
+      transparent
+    );
+  }
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  @include modal-text-base;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+}
+
+.modal-prompt {
+  color: $color-matrix-green;
+  font-weight: $font-weight-bold;
+  text-shadow: 0 0 12px rgba(0, 255, 65, 0.8);
+}
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 80px;
+}
+
+.modal-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  @include modal-text-base;
+  animation: textType 0.5s ease-out;
+}
+
+.modal-text {
+  flex: 1;
+  @include modal-text-base;
+  color: $color-text-white;
+}
+
+.modal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid $color-matrix-green-dark;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid $color-matrix-green-dark;
+  color: $color-text-white;
+  font-family: $font-family-primary;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.5);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 255, 65, 0.1);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover {
+    border-color: $color-matrix-green-medium;
+    box-shadow: 0 0 12px rgba(0, 255, 65, 0.3), inset 0 0 8px rgba(0, 255, 65, 0.1);
+    transform: translateY(-1px);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.2), inset 0 0 4px rgba(0, 255, 65, 0.15);
+  }
+
+  &:focus {
+    outline: 2px solid $color-matrix-green-medium;
+    outline-offset: 2px;
+  }
+}
+
+.modal-button-prompt {
+  font-weight: $font-weight-bold;
+  color: $color-matrix-green;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.8);
+}
+
+.modal-button-text {
+  color: $color-text-white;
+}
+
+.modal-button--accept {
+  &:hover {
+    background: rgba(0, 255, 65, 0.15);
+    border-color: $color-matrix-green-light;
+  }
+}
+
+.modal-button--decline {
+  &:hover {
+    background: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.5);
+    color: #ff4444;
+    text-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
+
+    .modal-button-prompt,
+    .modal-button-text {
+      color: #ff4444;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes textType {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-container {
+    width: 95vw;
+    @include modal-container-base;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 16px;
+  }
+
+  .modal-title {
+    font-size: $font-size-base;
+  }
+
+  .modal-text {
+    font-size: $font-size-small;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

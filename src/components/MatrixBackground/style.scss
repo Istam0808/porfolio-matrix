@@ -1,0 +1,100 @@
+@use "@/assets/styles/variables.scss" as *;
+
+.matrix-background {
+  z-index: 0;
+  mix-blend-mode: screen;
+  opacity: 0.92;
+  background: $color-bg-primary;
+  @include matrix-root-base;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, $color-gradient-green-end, transparent 55%),
+      radial-gradient(circle at 15% 35%, rgba(0, 180, 90, 0.18), transparent 60%),
+      radial-gradient(circle at 85% 55%, rgba(0, 140, 120, 0.12), transparent 65%);
+    opacity: 0.9;
+  }
+}
+
+.matrix-pattern {
+  opacity: 0.85;
+  transform: translateZ(0);
+  @include matrix-pattern-base;
+}
+
+.matrix-column {
+  left: var(--column-left, 0px);
+  animation-delay: var(--column-delay, -2s);
+  animation-duration: var(--column-duration, 3s);
+  will-change: transform, opacity;
+  @include matrix-column-base;
+
+  &::before {
+    content: "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      to bottom,
+      #ffffff 0%,
+      #ffffff 5%,
+      #00ff41 12%,
+      #00ff41 20%,
+      #00dd33 32%,
+      #00bb22 44%,
+      #009911 56%,
+      #007700 68%,
+      #005500 80%,
+      rgba(0, 255, 65, 0.5) 90%,
+      transparent 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    writing-mode: vertical-lr;
+    letter-spacing: 1px;
+    text-rendering: optimizeLegibility;
+  }
+
+  &[data-variant="kana-secondary"]::before {
+    content: "ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴァィゥェォャュョッABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  }
+
+  &[data-variant="kana-tertiary"]::before {
+    content: "アカサタナハマヤラワイキシチニヒミリウクスツヌフムユルエケセテネヘメレオコソトノホモヨロヲン0987654321";
+  }
+
+  &[data-variant="kana-quaternary"]::before {
+    content: "ンヲロヨモホノトソコオレメヘネテセケエルユムフヌツスクウリミヒニチシキイワラヤマハナタサカア";
+  }
+
+  &[data-variant="kana-symbols"]::before {
+    content: "ガザダバパギジヂビピグズヅブプゲゼデベペゴゾドボポヴァィゥェォャュョッ!@#$%^&*()_+-=[]{}|;:,.<>?";
+  }
+}
+
+@keyframes matrix-fall {
+  0% {
+    transform: translateY(-10%);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(200%);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .matrix-column {
+    @include matrix-column-size(18px, 14px, 16px);
+  }
+}
+
+@media (max-width: 480px) {
+  .matrix-column {
+    @include matrix-column-size(15px, 12px, 14px);
+  }
+}
