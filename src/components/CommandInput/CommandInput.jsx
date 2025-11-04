@@ -3,13 +3,25 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import "./style.scss";
 
+// Массив доступных команд с описаниями
+const AVAILABLE_COMMANDS = [
+  { command: "/help", description: "показать справку" },
+  { command: "/about", description: "информация обо мне" },
+  { command: "/project", description: "список проектов" },
+  { command: "/contacts", description: "контактная информация" },
+];
+
 const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
   const [command, setCommand] = useState("");
   const [cursorPosition, setCursorPosition] = useState(0);
   const [cursorLeft, setCursorLeft] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [filteredCommands, setFilteredCommands] = useState([]);
   const inputRef = useRef(null);
   const measureRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     // Фокусируем инпут при монтировании
@@ -18,6 +30,25 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
       setIsFocused(true);
     }
   }, []);
+
+  // Фильтрация команд при изменении инпута
+  useEffect(() => {
+    const trimmedCommand = command.trim();
+    
+    if (trimmedCommand === "/" || trimmedCommand.startsWith("/")) {
+      const filterText = trimmedCommand.toLowerCase();
+      const filtered = AVAILABLE_COMMANDS.filter((cmd) =>
+        cmd.command.toLowerCase().startsWith(filterText)
+      );
+      
+      setFilteredCommands(filtered);
+      setShowSuggestions(filtered.length > 0);
+      setSelectedIndex(0); // Сбрасываем выбранный индекс при изменении фильтра
+    } else {
+      setShowSuggestions(false);
+      setFilteredCommands([]);
+    }
+  }, [command]);
 
   useEffect(() => {
     // Обновляем позицию курсора при изменении текста
@@ -57,8 +88,51 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
     setTimeout(updateCursorPosition, 0);
   };
 
+  const selectSuggestion = (selectedCommand) => {
+    if (selectedCommand) {
+      setCommand(selectedCommand.command);
+      setShowSuggestions(false);
+      // Передаем новое значение в родительский компонент
+      if (onInputChange) {
+        onInputChange(selectedCommand.command);
+      }
+      // Фокусируем инпут после выбора
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          // Устанавливаем курсор в конец
+          const length = selectedCommand.command.length;
+          inputRef.current.setSelectionRange(length, length);
+        }
+      }, 0);
+    }
+  };
+
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (showSuggestions && filteredCommands.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((prev) => 
+          prev < filteredCommands.length - 1 ? prev + 1 : prev
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : 0));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const selectedCommand = filteredCommands[selectedIndex];
+        if (selectedCommand) {
+          selectSuggestion(selectedCommand);
+        }
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setShowSuggestions(false);
+        // Фокусируем инпут после закрытия
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }
+    } else if (e.key === "Enter") {
       const trimmedCommand = command.trim();
       if (trimmedCommand) {
         // Вызываем callback с командой
@@ -81,10 +155,34 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
   const handleFocus = () => {
     setIsFocused(true);
     updateCursorPosition();
+    // Показываем подсказки если текст начинается с /
+    const trimmedCommand = command.trim();
+    if (trimmedCommand === "/" || trimmedCommand.startsWith("/")) {
+      const filterText = trimmedCommand.toLowerCase();
+      const filtered = AVAILABLE_COMMANDS.filter((cmd) =>
+        cmd.command.toLowerCase().startsWith(filterText)
+      );
+      if (filtered.length > 0) {
+        setShowSuggestions(true);
+      }
+    }
   };
 
   const handleBlur = () => {
-    setIsFocused(false);
+    // Задерживаем закрытие dropdown, чтобы клик по элементу успел обработаться
+    setTimeout(() => {
+      setIsFocused(false);
+      setShowSuggestions(false);
+    }, 200);
+  };
+
+  const handleSuggestionClick = (selectedCommand) => {
+    selectSuggestion(selectedCommand);
+  };
+
+  const handleSuggestionMouseDown = (e) => {
+    // Предотвращаем потерю фокуса инпута при клике на dropdown
+    e.preventDefault();
   };
 
   // Вычисляем позицию курсора на основе ширины текста
@@ -129,6 +227,25 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
             className={`command-input__cursor ${isFocused ? 'command-input__cursor--focused' : ''}`}
             style={{ left: `${cursorLeft}px` }}
           ></span>
+          {showSuggestions && filteredCommands.length > 0 && (
+            <div 
+              ref={dropdownRef}
+              className="command-input__dropdown"
+              onMouseDown={handleSuggestionMouseDown}
+            >
+              {filteredCommands.map((cmd, index) => (
+                <div
+                  key={cmd.command}
+                  className={`command-input__suggestion ${index === selectedIndex ? 'command-input__suggestion--selected' : ''}`}
+                  onClick={() => handleSuggestionClick(cmd)}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                >
+                  <span className="command-input__suggestion-command">{cmd.command}</span>
+                  <span className="command-input__suggestion-description"> - {cmd.description}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

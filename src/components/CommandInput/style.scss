@@ -111,11 +111,89 @@
   }
 }
 
+.command-input__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  width: 100%;
+  min-width: max-content;
+  background: black;
+  border: 1px solid $color-matrix-green-dark;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 65, 0.15);
+  z-index: 1000;
+  max-height: 240px;
+  overflow-y: auto;
+  animation: dropdown-appear 0.2s ease-out;
+
+  @media (max-width: 768px) {
+    max-height: 200px;
+  }
+}
+
+.command-input__suggestion {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: $font-family-primary;
+  font-size: clamp(14px, 2vw, 16px);
+  color: $color-text-white;
+  letter-spacing: $letter-spacing-normal;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover,
+  &--selected {
+    background-color: rgba(0, 255, 65, 0.15);
+    color: $color-matrix-green;
+  }
+
+  &--selected {
+    border-left: 2px solid $color-matrix-green;
+    padding-left: 10px;
+  }
+}
+
+.command-input__suggestion-command {
+  font-weight: $font-weight-medium;
+  color: $color-matrix-green-light;
+}
+
+.command-input__suggestion-description {
+  opacity: 0.8;
+  font-size: clamp(12px, 1.8vw, 14px);
+}
+
+.command-input__suggestion--selected .command-input__suggestion-command {
+  color: $color-matrix-green;
+}
+
+.command-input__suggestion--selected .command-input__suggestion-description {
+  opacity: 1;
+}
+
 @keyframes cursor-blink {
   0%, 50% {
     opacity: 1;
   }
   51%, 100% {
     opacity: 0;
+  }
+}
+
+@keyframes dropdown-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
