@@ -2,25 +2,70 @@
 
 .command-info-container {
   position: absolute;
-  top: calc(55% + 60px);
+  top: calc(45% + 60px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  width: min(90vw, 600px);
+  width: min(90vw, 840px);
   max-height: 400px;
   overflow-y: auto;
-  background: linear-gradient(135deg, rgba(0, 10, 20, 0.95), rgba(0, 5, 10, 0.98));
+  background: #000000;
   border: 1px solid $color-matrix-green-dark;
   box-shadow: 0 0 40px rgba(0, 255, 65, 0.2), inset 0 0 20px rgba(0, 255, 65, 0.05);
   padding: 24px 32px;
   font-family: $font-family-primary;
   color: $color-text-white;
-  animation: infoSlideUp 0.4s ease-out;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out, top 0.4s ease-out, left 0.4s ease-out, transform 0.4s ease-out, width 0.4s ease-out, height 0.4s ease-out, max-height 0.4s ease-out;
+
+  &--visible {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: calc(100vh - 50px);
+    max-height: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
+    margin-top: 0;
+    opacity: 1;
+    visibility: visible;
+    animation: containerFadeIn 0.3s ease-out;
+  }
+
+  &--hidden {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: calc(100vh - 50px);
+    max-height: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
+    margin-top: 0;
+    opacity: 0;
+    visibility: hidden;
+    animation: containerFadeOut 0.3s ease-out;
+  }
 
   @media (max-width: 768px) {
     width: 95vw;
     padding: 20px 24px;
     max-height: 350px;
+
+    &:not(:empty) {
+      width: 100%;
+      height: calc(100vh - 50px);
+      max-height: none;
+      top: 50px;
+    }
   }
 
   &::-webkit-scrollbar {
@@ -152,9 +197,39 @@
   }
 }
 
+@keyframes containerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes containerFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
 @media (max-width: 600px) {
   .command-info-container {
-    top: calc(55% + 50px);
+    top: calc(45% + 50px);
+
+    &:not(:empty) {
+      top: 50px;
+      height: calc(100vh - 50px);
+      left: 0;
+      transform: none;
+      width: 100%;
+    }
   }
 
   .command-info__title {

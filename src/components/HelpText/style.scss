@@ -2,7 +2,7 @@
 
 .help-text {
   position: absolute;
-  top: 25%;
+  top: 15%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -17,7 +17,7 @@
 
 @media (max-width: 768px) {
   .help-text {
-    top: 20%;
+    top: 12%;
     font-size: clamp(14px, 4vw, 20px);
   }
 }

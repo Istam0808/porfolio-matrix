@@ -1,9 +1,26 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import "./style.scss";
 
 const CommandInfoContainer = ({ commandType }) => {
-  if (!commandType) return null;
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    if (commandType) {
+      setShouldRender(true);
+      // Небольшая задержка для применения стилей перед анимацией
+      setTimeout(() => setIsVisible(true), 10);
+    } else {
+      setIsVisible(false);
+      // Ждем окончания анимации перед удалением из DOM
+      const timer = setTimeout(() => setShouldRender(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [commandType]);
+
+  if (!shouldRender) return null;
 
   const renderContent = () => {
     switch (commandType) {
@@ -100,7 +117,7 @@ const CommandInfoContainer = ({ commandType }) => {
   };
 
   return (
-    <div className="command-info-container">
+    <div className={`command-info-container ${isVisible ? 'command-info-container--visible' : 'command-info-container--hidden'}`}>
       {renderContent()}
     </div>
   );

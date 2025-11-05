@@ -56,29 +56,49 @@ export default function Home() {
   const handleCommand = (command) => {
     const normalizedCommand = command.toLowerCase().trim();
     
+    // При нажатии Enter с командой /help - убеждаемся что модальное окно открыто
     if (normalizedCommand === "/help" || normalizedCommand === "help") {
       setShowHelp(true);
+      return;
+    }
+    
+    // Если была другая команда, закрываем модальное окно help
+    if (showHelp) {
+      setShowHelp(false);
     }
   };
 
   const handleInputChange = (inputValue) => {
     const trimmedInput = inputValue.trim().toLowerCase();
     
-    // Если инпут пустой, закрываем контейнер
+    // Если инпут пустой, закрываем контейнер и модальное окно
     if (!trimmedInput) {
+      setCurrentCommand(null);
+      setShowHelp(false);
+      return;
+    }
+    
+    // Проверяем точное совпадение с /help - открываем модальное окно сразу
+    if (trimmedInput === "/help") {
+      setShowHelp(true);
       setCurrentCommand(null);
       return;
     }
     
-    // Проверяем, начинается ли ввод с одной из команд
-    if (trimmedInput.startsWith("/about")) {
+    // Если был введён /help, но текст изменился - закрываем модальное окно
+    if (showHelp && trimmedInput !== "/help") {
+      setShowHelp(false);
+    }
+    
+    // Проверяем точное совпадение с командами (без дополнительных символов)
+    if (trimmedInput === "/about") {
       setCurrentCommand("about");
-    } else if (trimmedInput.startsWith("/project")) {
+    } else if (trimmedInput === "/project") {
       setCurrentCommand("project");
-    } else if (trimmedInput.startsWith("/contacts")) {
+    } else if (trimmedInput === "/contacts") {
       setCurrentCommand("contacts");
     } else {
-      // Если ввод не начинается с известных команд, закрываем контейнер
+      // Если команда не является точным совпадением, закрываем контейнер
       setCurrentCommand(null);
     }
   };
