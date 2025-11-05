@@ -7,7 +7,7 @@ import "./style.scss";
 const AVAILABLE_COMMANDS = [
   { command: "/help", description: "показать справку" },
   { command: "/about", description: "информация обо мне" },
-  { command: "/project", description: "список проектов" },
+  { command: "/projects", description: "список проектов" },
   { command: "/contacts", description: "контактная информация" },
 ];
 
@@ -16,6 +16,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
   const [cursorPosition, setCursorPosition] = useState(0);
   const [cursorLeft, setCursorLeft] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
+  const [isLargeInputFocused, setIsLargeInputFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [filteredCommands, setFilteredCommands] = useState([]);
@@ -55,6 +56,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
       if (showLargeInput && !isLargeInputClosing) {
         setIsLargeInputClosing(true);
         // Убираем фокус с большого инпута
+        setIsLargeInputFocused(false);
         if (largeInputRef.current) {
           largeInputRef.current.blur();
         }
@@ -81,10 +83,13 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
   // Фокусируем большой инпут при его появлении
   useEffect(() => {
     if (showLargeInput && !isLargeInputClosing) {
+      // Убираем фокус с маленького инпута
+      setIsFocused(false);
       const timer = setTimeout(() => {
         if (largeInputRef.current) {
           const cursorPos = command.length;
           setLargeInputCursorPosition(cursorPos);
+          setIsLargeInputFocused(true);
           largeInputRef.current.focus();
           largeInputRef.current.setSelectionRange(cursorPos, cursorPos);
         }
@@ -326,6 +331,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
         setShowSuggestions(false);
         setIsLargeInputClosing(true);
         // Убираем фокус с большого инпута
+        setIsLargeInputFocused(false);
         if (largeInputRef.current) {
           largeInputRef.current.blur();
         }
@@ -354,6 +360,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
         setCursorPosition(0);
         setIsLargeInputClosing(true);
         // Убираем фокус с большого инпута
+        setIsLargeInputFocused(false);
         if (largeInputRef.current) {
           largeInputRef.current.blur();
         }
@@ -381,7 +388,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
   };
 
   const handleLargeInputFocus = () => {
-    setIsFocused(true);
+    setIsLargeInputFocused(true);
     updateLargeInputCursorPosition();
     const trimmedCommand = command.trim();
     const isExactMatch = AVAILABLE_COMMANDS.some(
@@ -401,7 +408,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
 
   const handleLargeInputBlur = () => {
     setTimeout(() => {
-      setIsFocused(false);
+      setIsLargeInputFocused(false);
       setShowSuggestions(false);
     }, 200);
   };
@@ -434,7 +441,7 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
                 aria-hidden="true"
               />
               <span 
-                className={`command-input-large__cursor ${isFocused ? 'command-input-large__cursor--focused' : ''}`}
+                className={`command-input-large__cursor ${isLargeInputFocused ? 'command-input-large__cursor--focused' : ''}`}
                 style={{ left: `${largeInputCursorLeft}px` }}
               ></span>
             </div>

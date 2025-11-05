@@ -93,7 +93,7 @@ export default function Home() {
     // Проверяем точное совпадение с командами (без дополнительных символов)
     if (trimmedInput === "/about") {
       setCurrentCommand("about");
-    } else if (trimmedInput === "/project") {
+    } else if (trimmedInput === "/projects") {
       setCurrentCommand("project");
     } else if (trimmedInput === "/contacts") {
       setCurrentCommand("contacts");

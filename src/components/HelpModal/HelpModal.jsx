@@ -37,7 +37,7 @@ const HelpModal = ({ isOpen, onClose }) => {
         <div className="help-modal__commands">
           <p><span className="help-modal__command">/help</span> - показать эту справку</p>
           <p><span className="help-modal__command">/about</span> - информация обо мне</p>
-          <p><span className="help-modal__command">/project</span> - список проектов</p>
+          <p><span className="help-modal__command">/projects</span> - список проектов</p>
           <p><span className="help-modal__command">/contacts</span> - контактная информация</p>
         </div>
       </div>
