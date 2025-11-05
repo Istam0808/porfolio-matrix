@@ -6,6 +6,34 @@ import "./style.scss";
 const CommandInfoContainer = ({ commandType }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState({});
+
+  const skillsCategories = [
+    {
+      id: "languages",
+      name: "Languages",
+      icon: "💻",
+      skills: ["JavaScript", "Python", "TypeScript", "HTML5", "CSS3"]
+    },
+    {
+      id: "frontend",
+      name: "Frontend",
+      icon: "🎨",
+      skills: ["React", "Vue.js", "Next.js", "Nuxt.js", "React Native", "Sass", "TailwindCSS"]
+    },
+    {
+      id: "backend",
+      name: "Backend & Database",
+      icon: "⚙️",
+      skills: ["Django", "Node.js", "FastAPI", "PostgreSQL", "MongoDB", "Redis", "SQLite"]
+    },
+    {
+      id: "tools",
+      name: "Tools & Cloud",
+      icon: "🛠️",
+      skills: ["Git", "GitHub", "Docker", "AWS", "Google Cloud", "Figma", "VS Code"]
+    }
+  ];
 
   useEffect(() => {
     if (commandType) {
@@ -20,6 +48,13 @@ const CommandInfoContainer = ({ commandType }) => {
     }
   }, [commandType]);
 
+  const toggleCategory = (categoryId) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
+  };
+
   if (!shouldRender) return null;
 
   const renderContent = () => {
@@ -33,26 +68,43 @@ const CommandInfoContainer = ({ commandType }) => {
                 <span className="command-info__label">Имя:</span> Istam Mamadaliyev
               </p>
               <p className="command-info__text">
-                <span className="command-info__label">Роль:</span> Full Stack Developer
+                <span className="command-info__label">Роль:</span> Full-Stack разработчик | Веб-приложения и Telegram-боты, которые решают бизнес-задачи 🚀
               </p>
             </div>
             <div className="command-info__section">
               <p className="command-info__label">Биография:</p>
               <p className="command-info__text">
-                Я разработчик, специализирующийся на создании современных веб-приложений. 
-                Увлекаюсь созданием интерактивных пользовательских интерфейсов и разработкой 
-                эффективных backend-решений.
+                Создаю полнофункциональные веб-приложения и Telegram-боты для автоматизации и развития бизнеса. От идеи до запуска — вы получаете готовое решение, а не часть проекта.
               </p>
             </div>
             <div className="command-info__section">
               <p className="command-info__label">Навыки:</p>
-              <ul className="command-info__list">
-                <li>JavaScript / TypeScript</li>
-                <li>React / Next.js</li>
-                <li>Node.js</li>
-                <li>HTML / CSS / SCSS</li>
-                <li>Git</li>
-              </ul>
+              <div className="command-info__skills">
+                {skillsCategories.map((category) => (
+                  <div key={category.id} className="command-info__skill-category">
+                    <div 
+                      className="command-info__skill-header"
+                      onClick={() => toggleCategory(category.id)}
+                    >
+                      <span className="command-info__skill-arrow">
+                        {expandedCategories[category.id] ? "▼" : "▶"}
+                      </span>
+                      <span className="command-info__skill-name">
+                        {category.icon} {category.name}
+                      </span>
+                    </div>
+                    {expandedCategories[category.id] && (
+                      <div className="command-info__skill-items">
+                        {category.skills.map((skill, index) => (
+                          <div key={index} className="command-info__skill-item">
+                            {skill}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         );

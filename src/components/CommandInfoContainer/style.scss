@@ -186,6 +186,102 @@
   }
 }
 
+.command-info__skills {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  @include cmd-text-base;
+}
+
+.command-info__skill-category {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @include cmd-text-base;
+}
+
+.command-info__skill-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background: rgba(0, 255, 65, 0.03);
+  border: 1px solid transparent;
+
+  &:hover {
+    background: rgba(0, 255, 65, 0.08);
+    border-color: $color-matrix-green-dark;
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.2);
+  }
+
+  @include cmd-text-base;
+}
+
+.command-info__skill-arrow {
+  display: inline-block;
+  color: $color-matrix-green;
+  font-size: $font-size-small;
+  font-weight: $font-weight-bold;
+  transition: transform 0.3s ease;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+  min-width: 16px;
+  text-align: center;
+  @include cmd-text-base;
+}
+
+.command-info__skill-name {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-matrix-green-light;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+  letter-spacing: $letter-spacing-normal;
+  @include cmd-text-base;
+}
+
+.command-info__skill-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 28px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  animation: skillItemsFadeIn 0.3s ease-out;
+  @include cmd-text-base;
+}
+
+.command-info__skill-item {
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $color-text-white;
+  letter-spacing: $letter-spacing-normal;
+  padding-left: 20px;
+  position: relative;
+
+  &::before {
+    content: "> ";
+    position: absolute;
+    left: 0;
+    color: $color-matrix-green;
+    font-weight: $font-weight-bold;
+  }
+
+  @include cmd-text-base;
+}
+
+@keyframes skillItemsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes infoSlideUp {
   from {
     transform: translateX(-50%) translateY(20px);
@@ -238,6 +334,11 @@
 
   .command-info__text,
   .command-info__list li {
+    font-size: $font-size-small;
+  }
+
+  .command-info__skill-name,
+  .command-info__skill-item {
     font-size: $font-size-small;
   }
 }

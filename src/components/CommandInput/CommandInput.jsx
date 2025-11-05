@@ -50,24 +50,21 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
     if (isExactMatch) {
       setIsLargeInputClosing(false);
       setShowLargeInput(true);
-      // Фокусируем большой инпут с небольшой задержкой
-      setTimeout(() => {
-        if (largeInputRef.current) {
-          const cursorPos = command.length;
-          setLargeInputCursorPosition(cursorPos);
-          largeInputRef.current.focus();
-          largeInputRef.current.setSelectionRange(cursorPos, cursorPos);
-        }
-      }, 100);
     } else {
       // Запускаем анимацию закрытия перед скрытием
       if (showLargeInput && !isLargeInputClosing) {
         setIsLargeInputClosing(true);
-        // Сразу переводим фокус на маленький инпут
+        // Убираем фокус с большого инпута
+        if (largeInputRef.current) {
+          largeInputRef.current.blur();
+        }
+        // Переводим фокус на маленький инпут перед началом анимации закрытия
         setTimeout(() => {
           if (inputRef.current) {
-            inputRef.current.focus();
             const cursorPos = command.length;
+            setIsFocused(true);
+            setCursorPosition(cursorPos);
+            inputRef.current.focus();
             inputRef.current.setSelectionRange(cursorPos, cursorPos);
           }
         }, 50);
@@ -80,6 +77,21 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
       }
     }
   }, [command, showLargeInput, isLargeInputClosing]);
+
+  // Фокусируем большой инпут при его появлении
+  useEffect(() => {
+    if (showLargeInput && !isLargeInputClosing) {
+      const timer = setTimeout(() => {
+        if (largeInputRef.current) {
+          const cursorPos = command.length;
+          setLargeInputCursorPosition(cursorPos);
+          largeInputRef.current.focus();
+          largeInputRef.current.setSelectionRange(cursorPos, cursorPos);
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showLargeInput, isLargeInputClosing, command]);
 
   // Фильтрация команд при изменении инпута
   useEffect(() => {
@@ -312,10 +324,25 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
       } else if (e.key === "Escape") {
         e.preventDefault();
         setShowSuggestions(false);
-        setShowLargeInput(false);
-        if (inputRef.current) {
-          inputRef.current.focus();
+        setIsLargeInputClosing(true);
+        // Убираем фокус с большого инпута
+        if (largeInputRef.current) {
+          largeInputRef.current.blur();
         }
+        // Переводим фокус на маленький инпут
+        setTimeout(() => {
+          if (inputRef.current) {
+            const cursorPos = command.length;
+            setIsFocused(true);
+            setCursorPosition(cursorPos);
+            inputRef.current.focus();
+            inputRef.current.setSelectionRange(cursorPos, cursorPos);
+          }
+        }, 50);
+        setTimeout(() => {
+          setShowLargeInput(false);
+          setIsLargeInputClosing(false);
+        }, 300);
       }
     } else if (e.key === "Enter") {
       const trimmedCommand = command.trim();
@@ -325,7 +352,24 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
         }
         setCommand("");
         setCursorPosition(0);
-        setShowLargeInput(false);
+        setIsLargeInputClosing(true);
+        // Убираем фокус с большого инпута
+        if (largeInputRef.current) {
+          largeInputRef.current.blur();
+        }
+        // Переводим фокус на маленький инпут
+        setTimeout(() => {
+          if (inputRef.current) {
+            setIsFocused(true);
+            setCursorPosition(0);
+            inputRef.current.focus();
+            inputRef.current.setSelectionRange(0, 0);
+          }
+        }, 50);
+        setTimeout(() => {
+          setShowLargeInput(false);
+          setIsLargeInputClosing(false);
+        }, 300);
       }
     } else {
       setTimeout(updateLargeInputCursorPosition, 0);
@@ -383,7 +427,6 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
                 onFocus={handleLargeInputFocus}
                 onBlur={handleLargeInputBlur}
                 placeholder=""
-                autoFocus
               />
               <span 
                 ref={largeMeasureRef}
@@ -394,25 +437,6 @@ const CommandInput = ({ onCommand, onInputChange, hasInfoContainer }) => {
                 className={`command-input-large__cursor ${isFocused ? 'command-input-large__cursor--focused' : ''}`}
                 style={{ left: `${largeInputCursorLeft}px` }}
               ></span>
-              {showSuggestions && filteredCommands.length > 0 && (
-                <div 
-                  ref={largeDropdownRef}
-                  className="command-input-large__dropdown"
-                  onMouseDown={handleSuggestionMouseDown}
-                >
-                  {filteredCommands.map((cmd, index) => (
-                    <div
-                      key={cmd.command}
-                      className={`command-input-large__suggestion ${index === selectedIndex ? 'command-input-large__suggestion--selected' : ''}`}
-                      onClick={() => handleSuggestionClick(cmd)}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                    >
-                      <span className="command-input-large__suggestion-command">{cmd.command}</span>
-                      <span className="command-input-large__suggestion-description"> - {cmd.description}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>
